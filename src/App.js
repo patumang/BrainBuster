@@ -1,23 +1,33 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react';
+import QuestionList from './QuestionList';
+import QuestionDetail from './QuestionDetail';
+import questions from './questions.json';
 
 function App() {
+  const [currentQuestionId, setCurrentQuestionId] = useState(questions[0].id);
+  const [userAnswers, setUserAnswers] = useState({});
+
+  const handleAnswerChange = (id, answer) => {
+    setUserAnswers({
+      ...userAnswers,
+      [id]: answer,
+    });
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className='App'>
+      <QuestionList
+        questions={questions}
+        currentQuestionId={currentQuestionId}
+        setCurrentQuestionId={setCurrentQuestionId}
+      />
+      <QuestionDetail
+        question={questions.find((q) => q.id === currentQuestionId)}
+        userAnswer={userAnswers[currentQuestionId] || ''}
+        onAnswerChange={handleAnswerChange}
+        setCurrentQuestionId={setCurrentQuestionId}
+        totalQuestions={questions.length}
+      />
     </div>
   );
 }
