@@ -8,7 +8,10 @@ function AnswerEvaluation({ userAnswer, correctAnswer }) {
     const minLength = Math.min(userAnswer.length, correctAnswer.length);
 
     for (let i = 0; i < minLength; i++) {
-      if (userAnswer[i] === correctAnswer[i]) {
+      const userChar = userAnswer[i].toLowerCase(); // Convert to lowercase
+      const correctChar = correctAnswer[i].toLowerCase(); // Convert to lowercase
+
+      if (userChar === correctChar) {
         evaluationResult.push({ char: userAnswer[i], correct: true });
       } else {
         evaluationResult.push({ char: userAnswer[i], correct: false });
