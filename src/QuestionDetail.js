@@ -1,9 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Box, Button, TextField, Typography } from '@mui/material';
 import AnswerEvaluation from './AnswerEvaluation';
-import { diff_match_patch } from 'diff-match-patch';
-
-const dmp = new diff_match_patch();
 
 function QuestionDetail({
   question,
@@ -11,18 +8,7 @@ function QuestionDetail({
   onAnswerChange,
   setCurrentQuestionId,
   totalQuestions,
-  mistakes,
 }) {
-  const [mistakesCount, setMistakesCount] = useState(mistakes);
-
-  useEffect(() => {
-    const diffs = dmp.diff_main(question.answer, userAnswer);
-    dmp.diff_cleanupSemantic(diffs);
-    const count = diffs.filter((part) => part[0] !== 0).length;
-    setMistakesCount(count);
-    onAnswerChange(question.id, userAnswer, count);
-  }, [userAnswer, question.answer, onAnswerChange, question.id]);
-
   const handlePrevious = () => {
     if (question.id > 1) {
       setCurrentQuestionId(question.id - 1);
@@ -45,9 +31,7 @@ function QuestionDetail({
         multiline
         minRows={4}
         value={userAnswer}
-        onChange={(e) =>
-          onAnswerChange(question.id, e.target.value, mistakesCount)
-        }
+        onChange={(e) => onAnswerChange(question.id, e.target.value)}
         variant='outlined'
         margin='normal'
       />
@@ -55,9 +39,6 @@ function QuestionDetail({
         userAnswer={userAnswer}
         correctAnswer={question.answer}
       />
-      <Typography variant='body1' color='error'>
-        Mistakes: {mistakesCount}
-      </Typography>
       <Box mt={2}>
         <Button
           variant='contained'

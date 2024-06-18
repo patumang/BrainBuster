@@ -1,25 +1,39 @@
 import React from 'react';
 import { Box, Typography } from '@mui/material';
-import { diff_match_patch } from 'diff-match-patch';
-
-const dmp = new diff_match_patch();
 
 function AnswerEvaluation({ userAnswer, correctAnswer }) {
-  const diffs = dmp.diff_main(correctAnswer, userAnswer);
-  dmp.diff_cleanupSemantic(diffs);
+  // Function to compare user answer with correct answer and generate evaluation result
+  const evaluateAnswer = (userAnswer, correctAnswer) => {
+    const evaluationResult = [];
+    const minLength = Math.min(userAnswer.length, correctAnswer.length);
+
+    for (let i = 0; i < minLength; i++) {
+      if (userAnswer[i] === correctAnswer[i]) {
+        evaluationResult.push({ char: userAnswer[i], correct: true });
+      } else {
+        evaluationResult.push({ char: userAnswer[i], correct: false });
+      }
+    }
+
+    // Add remaining characters from userAnswer in case it's longer than correctAnswer
+    for (let i = minLength; i < userAnswer.length; i++) {
+      evaluationResult.push({ char: userAnswer[i], correct: false });
+    }
+
+    return evaluationResult;
+  };
+
+  // Get the evaluation result
+  const evaluation = evaluateAnswer(userAnswer, correctAnswer);
 
   return (
     <Box mt={2}>
       <Typography variant='body1' component='div'>
-        {diffs.map((part, index) => {
-          const color =
-            part[0] === 0 ? 'inherit' : part[0] === -1 ? 'red' : 'green';
-          return (
-            <span key={index} style={{ color }}>
-              {part[1]}
-            </span>
-          );
-        })}
+        {evaluation.map((item, index) => (
+          <span key={index} style={{ color: item.correct ? 'green' : 'red' }}>
+            {item.char}
+          </span>
+        ))}
       </Typography>
     </Box>
   );
