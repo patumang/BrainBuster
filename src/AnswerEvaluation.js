@@ -5,22 +5,42 @@ function AnswerEvaluation({ userAnswer, correctAnswer }) {
   // Function to compare user answer with correct answer and generate evaluation result
   const evaluateAnswer = (userAnswer, correctAnswer) => {
     const evaluationResult = [];
-    const minLength = Math.min(userAnswer.length, correctAnswer.length);
+    let userIndex = 0;
+    let correctIndex = 0;
 
-    for (let i = 0; i < minLength; i++) {
-      const userChar = userAnswer[i].toLowerCase(); // Convert to lowercase
-      const correctChar = correctAnswer[i].toLowerCase(); // Convert to lowercase
+    while (
+      userIndex < userAnswer.length &&
+      correctIndex < correctAnswer.length
+    ) {
+      const userChar = userAnswer[userIndex].toLowerCase(); // Convert to lowercase
+      let correctChar = correctAnswer[correctIndex].toLowerCase(); // Convert to lowercase
+
+      if (
+        (correctChar === ',' && userChar !== ',') ||
+        (correctChar === '.' && userChar !== '.')
+      ) {
+        // Skip over commas and dots in correct answer
+        correctIndex++;
+        correctChar = correctAnswer[correctIndex].toLowerCase(); // Convert to lowercase
+      }
 
       if (userChar === correctChar) {
-        evaluationResult.push({ char: userAnswer[i], correct: true });
+        evaluationResult.push({ char: userAnswer[userIndex], correct: true });
+        correctIndex++;
+      } else if (userChar === ',' || userChar === '.') {
+        // Skip over commas and dots in user answer
+        evaluationResult.push({ char: userAnswer[userIndex], correct: true });
       } else {
-        evaluationResult.push({ char: userAnswer[i], correct: false });
+        evaluationResult.push({ char: userAnswer[userIndex], correct: false });
       }
+
+      userIndex++;
     }
 
     // Add remaining characters from userAnswer in case it's longer than correctAnswer
-    for (let i = minLength; i < userAnswer.length; i++) {
-      evaluationResult.push({ char: userAnswer[i], correct: false });
+    while (userIndex < userAnswer.length) {
+      evaluationResult.push({ char: userAnswer[userIndex], correct: false });
+      userIndex++;
     }
 
     return evaluationResult;
