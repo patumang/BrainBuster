@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Grid, Typography, Paper, CssBaseline } from '@mui/material';
 import QuestionList from './QuestionList';
 import QuestionDetail from './QuestionDetail';
@@ -7,11 +7,22 @@ import questions from './questions.json';
 function App() {
   const [currentQuestionId, setCurrentQuestionId] = useState(questions[0].id);
   const [userAnswers, setUserAnswers] = useState({});
+  const [mistakes, setMistakes] = useState(
+    JSON.parse(localStorage.getItem('mistakes')) || {}
+  );
 
-  const handleAnswerChange = (id, answer) => {
+  useEffect(() => {
+    localStorage.setItem('mistakes', JSON.stringify(mistakes));
+  }, [mistakes]);
+
+  const handleAnswerChange = (id, answer, mistakesCount) => {
     setUserAnswers({
       ...userAnswers,
       [id]: answer,
+    });
+    setMistakes({
+      ...mistakes,
+      [id]: mistakesCount,
     });
   };
 
@@ -37,6 +48,7 @@ function App() {
                 question={questions.find((q) => q.id === currentQuestionId)}
                 userAnswer={userAnswers[currentQuestionId] || ''}
                 onAnswerChange={handleAnswerChange}
+                mistakes={mistakes[currentQuestionId] || 0}
                 setCurrentQuestionId={setCurrentQuestionId}
                 totalQuestions={questions.length}
               />
