@@ -8,28 +8,35 @@ function AnswerEvaluation({ userAnswer, correctAnswer }) {
     let userIndex = 0;
     let correctIndex = 0;
 
+    // Regular expression to check for special characters
+    const isSpecialCharacter = (char) => /[^a-zA-Z0-9]/.test(char);
+
     while (
       userIndex < userAnswer.length &&
       correctIndex < correctAnswer.length
     ) {
-      const userChar = userAnswer[userIndex].toLowerCase(); // Convert to lowercase
+      let userChar = userAnswer[userIndex].toLowerCase(); // Convert to lowercase
       let correctChar = correctAnswer[correctIndex].toLowerCase(); // Convert to lowercase
 
-      if (
-        (correctChar === ',' && userChar !== ',') ||
-        (correctChar === '.' && userChar !== '.')
+      // Skip special characters in the correct answer
+      while (
+        isSpecialCharacter(correctChar) &&
+        correctIndex < correctAnswer.length
       ) {
-        // Skip over commas and dots in correct answer
         correctIndex++;
-        correctChar = correctAnswer[correctIndex].toLowerCase(); // Convert to lowercase
+        correctChar = correctAnswer[correctIndex]?.toLowerCase();
+      }
+
+      // Skip special characters in the user answer
+      while (isSpecialCharacter(userChar) && userIndex < userAnswer.length) {
+        evaluationResult.push({ char: userAnswer[userIndex], correct: true });
+        userIndex++;
+        userChar = userAnswer[userIndex]?.toLowerCase();
       }
 
       if (userChar === correctChar) {
         evaluationResult.push({ char: userAnswer[userIndex], correct: true });
         correctIndex++;
-      } else if (userChar === ',' || userChar === '.') {
-        // Skip over commas and dots in user answer
-        evaluationResult.push({ char: userAnswer[userIndex], correct: true });
       } else {
         evaluationResult.push({ char: userAnswer[userIndex], correct: false });
       }
