@@ -1,23 +1,30 @@
 import React from 'react';
+import {
+  List,
+  ListItem,
+  ListItemText,
+  ListItemButton,
+  Typography,
+} from '@mui/material';
 
 function QuestionList({ questions, currentQuestionId, setCurrentQuestionId }) {
   return (
     <div className='question-list'>
-      <h2>Questions</h2>
-      <ul>
+      <Typography variant='h6' component='h2'>
+        Questions
+      </Typography>
+      <List>
         {questions.map((question) => (
-          <li
-            key={question.id}
-            style={{
-              cursor: 'pointer',
-              fontWeight: question.id === currentQuestionId ? 'bold' : 'normal',
-            }}
-            onClick={() => setCurrentQuestionId(question.id)}
-          >
-            {question.question}
-          </li>
+          <ListItem key={question.id} disablePadding>
+            <ListItemButton
+              selected={question.id === currentQuestionId}
+              onClick={() => setCurrentQuestionId(question.id)}
+            >
+              <ListItemText primary={question.question} />
+            </ListItemButton>
+          </ListItem>
         ))}
-      </ul>
+      </List>
     </div>
   );
 }

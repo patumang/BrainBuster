@@ -1,4 +1,5 @@
 import React from 'react';
+import { Box, Button, TextField, Typography } from '@mui/material';
 import AnswerEvaluation from './AnswerEvaluation';
 
 function QuestionDetail({
@@ -21,25 +22,42 @@ function QuestionDetail({
   };
 
   return (
-    <div className='question-detail'>
-      <h2>{question.question}</h2>
-      <textarea
+    <Box p={2}>
+      <Typography variant='h6' component='h2'>
+        {question.question}
+      </Typography>
+      <TextField
+        fullWidth
+        multiline
+        minRows={4}
         value={userAnswer}
         onChange={(e) => onAnswerChange(question.id, e.target.value)}
+        variant='outlined'
+        margin='normal'
       />
       <AnswerEvaluation
         userAnswer={userAnswer}
         correctAnswer={question.answer}
       />
-      <div>
-        <button onClick={handlePrevious} disabled={question.id === 1}>
+      <Box mt={2}>
+        <Button
+          variant='contained'
+          onClick={handlePrevious}
+          disabled={question.id === 1}
+        >
           Previous
-        </button>
-        <button onClick={handleNext} disabled={question.id === totalQuestions}>
+        </Button>
+        <Button
+          variant='contained'
+          color='primary'
+          onClick={handleNext}
+          disabled={question.id === totalQuestions}
+          sx={{ ml: 2 }}
+        >
           Next
-        </button>
-      </div>
-    </div>
+        </Button>
+      </Box>
+    </Box>
   );
 }
 
